@@ -17,6 +17,6 @@
 #define _DSA_HELPER_
 
 EVP_PKEY *load_dsa_public_key_der(unsigned char *data, unsigned long size);
-EVP_PKEY *load_public_key_pem(unsigned char *data, unsigned long size);
+EVP_PKEY *load_dsa_public_key_pem(unsigned char *data, unsigned long size);
 
 #endif
