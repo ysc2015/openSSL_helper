@@ -57,3 +57,42 @@ EVP_PKEY *load_dsa_public_key_pem(unsigned char *data, unsigned long size) {
 	
 	return public_key;
 }
+
+EVP_PKEY *load_public_key_x509(unsigned char *data, unsigned long size) {
+	X509 *x509 = NULL;
+	BIO *cert = NULL;
+	EVP_PKEY *pubKey = NULL;
+
+	// Init
+	x509 = X509_new();
+	if (x509 == NULL) {
+		return NULL;
+	}
+
+	// Getting Public Key From Certification
+	cert = BIO_new_mem_buf(data, size);
+	if (!cert) {
+		X509_free(x509);
+		return NULL;
+	}
+
+	x509 = d2i_X509_bio(cert, NULL);
+	if (x509 == NULL) {
+		BIO_free(cert);
+		return NULL;
+	}
+
+	pubKey = X509_get_pubkey(x509);
+	if (!pubKey) {
+		X509_free(x509);
+		BIO_free(cert);
+		return NULL;
+	}
+
+	if (x509)
+		X509_free(x509);
+	if (cert)
+		BIO_free(cert);
+
+	return pubKey;
+}
