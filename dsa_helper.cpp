@@ -112,3 +112,33 @@ EVP_PKEY *load_dsa_public_key(unsigned char *data, int size) {
 	
 	return pubKey;
 }
+
+int dsa_verify_signature(
+	unsigned char *public_key_data, unsigned long public_key_data_size, 
+	unsigned char *signature_data, unsigned long signature_size, 
+	unsigned char *signed_data, unsigned long signed_data_size)
+{
+	DSA *dsa = NULL;
+	EVP_PKEY *public_key = load_dsa_public_key(public_key_data, public_key_data_size);
+
+	if (!public_key) {
+		return 0;
+	}
+	
+	EVP_PKEY_set1_DSA(pubKey, dsa);
+
+	if (dsa != NULL)
+	{		
+		int ret = DSA_verify(NID_sha1, signed_data, signed_data_size, signature_data, signature_size, dsa);
+		if (ret != 1) {
+			DSA_free(dsa);
+			EVP_PKEY_free(pubKey);
+			return 0;
+		}
+		else {
+			return 1;
+		}
+	}
+
+	return 0;
+}
