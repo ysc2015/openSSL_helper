@@ -96,3 +96,19 @@ EVP_PKEY *load_public_key_x509(unsigned char *data, unsigned long size) {
 
 	return pubKey;
 }
+
+EVP_PKEY *load_dsa_public_key(unsigned char *data, int size) {
+	EVP_PKEY *pubKey = NULL;
+	pubKey = load_dsa_public_key_der(data, size);
+	
+	if (pubKey) {
+		return pubKey;
+	}
+	pubKey = load_dsa_public_key_pem(data, size);
+	if (pubKey) {
+		return pubKey;
+	}
+	pubKey = load_public_key_x509(data, size);
+	
+	return pubKey;
+}
